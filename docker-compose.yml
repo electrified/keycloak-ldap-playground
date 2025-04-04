@@ -1,16 +1,38 @@
+volumes:
+  pg-data:
+    name: keycloak-pg-data
+
 services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: passw0rd
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
   keycloak:
     image: quay.io/keycloak/keycloak:latest
-    command: start-dev
+    command: start-dev --import-realm
     environment:
-      - KC_DB=dev-file
       - KC_HTTP_PORT=8080
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=postgres
+      - KC_DB_URL_PORT=5432
+      - KC_DB_URL_DATABASE=keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=passw0rd
+    volumes:
+      - ./keycloak/import:/opt/keycloak/data/import
     ports:
       - "8080:8080"
     depends_on:
       - openldap
+      - postgres
+
 
   openldap:
     image: bitnami/openldap:latest
@@ -27,8 +49,8 @@ services:
       - "1389:1389"
       - "636:636"
     volumes:
-      - './ldifs:/ldifs'
-      - './schema/memberof.ldif:/opt/bitnami/openldap/etc/schema/memberof.ldif'
+      - './openldap/ldifs:/ldifs'
+      - './openldap/schema/memberof.ldif:/opt/bitnami/openldap/etc/schema/memberof.ldif'
 
   phpldapadmin:
     image: osixia/phpldapadmin:latest

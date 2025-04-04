@@ -1,4 +1,6 @@
-Access Information:
+# Playground for experimenting with Keycloak and LDAP
+
+## Access Information
 
     Keycloak: http://localhost:8080
 
@@ -12,26 +14,18 @@ Access Information:
 
         Host: openldap
 
-        Base DN: dc=example,dc=com
+        Base DN: dc=example,dc=org
 
         Admin DN: cn=admin,dc=example,dc=org
 
-        Users: user01 / password1, user02 / password2
+        Users: bob / pass, alice / pass
 
-ldapsearch -x -H ldap://localhost:1389 -D "cn=admin,dc=example,dc=org" -w adminpassword -b "ou=users,dc=example,dc=org" "(objectClass=inetOrgPerson)" memberOf +
+After starting keycloak, the LDAP password will need to be entered as this isn't included in the import
+
+Use phpldapadmin for adding / removing users from groups.
+View how that group membership is reflected (or not) in Keycloak
 
 
-ldapadd -H ldap://localhost:1389 -D "cn=admin,dc=example,dc=org" -w "adminpassword" <<EOF
-dn: cn=z-module,cn=config
-objectClass: olcModuleList
-cn: z-module
-olcModuleLoad: dynlist.so
-olcModulePath: /opt/bitnami/openldap/lib/openldap
-dn: olcOverlay=dynlist,olcDatabase={N}mdb,cn=config
-objectClass: olcConfig
-objectClass: olcDynListConfig
-objectClass: olcOverlayConfig
-objectClass: top
-olcOverlay: dynlist
-olcDynListAttrSet: groupOfUrls memberURL member+memberOf@groupOfNames
-EOF
+'''
+ldapsearch -x -H ldap://localhost:1389 -D "cn=admin,dc=example,dc=org" -w admin -b "ou=users,dc=example,dc=org" "(objectClass=inetOrgPerson)" memberOf +
+'''
