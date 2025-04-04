@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -17,17 +15,20 @@ services:
   openldap:
     image: bitnami/openldap:latest
     environment:
+      - BITNAMI_DEBUG=true
+      - LDAP_CONFIG_ADMIN_ENABLED=yes
       - LDAP_ADMIN_USERNAME=admin
-      - LDAP_ADMIN_PASSWORD=adminpassword
-      - LDAP_USERS=user01,user02
-      - LDAP_PASSWORDS=password1,password2
-      - LDAP_GROUP=developers
-      - LDAP_GROUP_USERS=user01,user02
+      - LDAP_ADMIN_PASSWORD=admin
       - LDAP_ROOT=dc=example,dc=org
       - LDAP_ADMIN_DN=cn=admin,dc=example,dc=org
+      - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,memberof
+      - LDAP_CUSTOM_LDIF_DIR=/ldifs
     ports:
       - "1389:1389"
       - "636:636"
+    volumes:
+      - './ldifs:/ldifs'
+      - './schema/memberof.ldif:/opt/bitnami/openldap/etc/schema/memberof.ldif'
 
   phpldapadmin:
     image: osixia/phpldapadmin:latest
