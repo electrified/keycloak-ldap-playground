@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      - KC_DB=dev-file
+      - KC_HTTP_PORT=8080
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - openldap
+
+  openldap:
+    image: bitnami/openldap:latest
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_USERS=user01,user02
+      - LDAP_PASSWORDS=password1,password2
+      - LDAP_GROUP=developers
+      - LDAP_GROUP_USERS=user01,user02
+      - LDAP_ROOT=dc=example,dc=org
+      - LDAP_ADMIN_DN=cn=admin,dc=example,dc=org
+    ports:
+      - "1389:1389"
+      - "636:636"
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=#PYTHON2BASH:[{"openldap":[{"server":[{"port":1389}]}]}]
+      - PHPLDAPADMIN_HTTPS=false
+      - PHPLDAPADMIN_LDAP_CLIENT_TLS=false
+    ports:
+      - "8081:80"
+    depends_on:
+      - openldap
