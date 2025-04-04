@@ -33,7 +33,6 @@ services:
       - openldap
       - postgres
 
-
   openldap:
     image: bitnami/openldap:latest
     environment:
