@@ -1491,7 +1491,7 @@
             "-1"
           ],
           "bindCredential": [
-            "**********"
+            "admin"
           ],
           "usernameLDAPAttribute": [
             "cn"
