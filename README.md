@@ -18,7 +18,7 @@ View how that group membership is reflected (or not) in Keycloak
 
 Logging in with the users can be done at http://localhost:8080/realms/test/account
 
-When exporting the realm JSON, remember to tick include clients otherwise the above account app will break.
+When exporting the realm JSON, remember to tick include clients otherwise the above account app will break. (See https://github.com/keycloak/keycloak/discussions/12894)
 Also set "bindCredential" in the exported JSON as this is set to a dummy value.
 
 '''
