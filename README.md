@@ -1,5 +1,9 @@
 # Playground for experimenting with Keycloak and LDAP
 
+## Known issues
+- pgpass doesn't work in pgadmin - you'll have to enter the db password
+- user self service part of keycloak is broken due to export / import - see link below. Logging in still works, and can be used as a test but app is broken.
+
 ## Access Information
 
 ### Keycloak
